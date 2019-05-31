@@ -20,6 +20,9 @@ Framebuffer::Framebuffer(CreateInfo create_info) : size(create_info.size) {
                                GL_TEXTURE_2D, texture, 0);
         create_rbo();
     }
+#ifdef _DEBUG
+    check_complete();
+#endif
 }
 
 Framebuffer::~Framebuffer() {

@@ -134,9 +134,10 @@ void Application::run() {
         emitter.shape.angle = 45.0f;
         emitter.shape.randomize_direction = 0.0f;
         VertexArray::CreateInfo vao_info;
-        vao_info.attributes.push_back({0, 3}); // position
-        vao_info.attributes.push_back({1, 2}); // texture coordinates
-        vao_info.vertices = particle_quad_vertices;
+		vao_info.buffers.resize(1);
+        vao_info.buffers[0].attributes.push_back({0, 3}); // position
+        vao_info.buffers[0].attributes.push_back({1, 2}); // texture coordinates
+        vao_info.buffers[0].vertices = particle_quad_vertices;
         vao_info.indices = particle_quad_indices;
         emitter.particle_vao =
             AssetManager<VertexArray>::get_resource(vao_info, "particle_vao");

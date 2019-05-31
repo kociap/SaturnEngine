@@ -25,7 +25,7 @@ public:
     Resource<Shader> get_active();
 
     static PostProcessing& get_instance() {
-        static std::unique_ptr<PostProcessing> instance;
+        static std::unique_ptr<PostProcessing> instance = nullptr;
         if (instance == nullptr) {
             instance = std::make_unique<PostProcessing>();
         }

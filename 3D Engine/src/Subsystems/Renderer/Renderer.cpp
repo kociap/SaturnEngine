@@ -35,8 +35,11 @@ Renderer::Renderer(CreateInfo create_info) :
     std::vector<VertexAttribute> screen_attributes;
     screen_attributes.push_back({0, 3}); // Position is a vec3
     screen_attributes.push_back({1, 2}); // TexCoords is a vec2
-
-    screen.assign({screen_attributes, screen_vertices, {0, 1, 2, 0, 3, 2}});
+    std::vector<VertexArray::CreateInfo::Buffer> buffers(1);
+    buffers[0].attributes = screen_attributes;
+    buffers[0].vertices = screen_vertices;
+    buffers[0].mode = BufferMode::Static;
+    screen.assign({buffers, {0, 1, 2, 0, 3, 2}});
 
     PostProcessing::get_instance().load_shaders(
         "resources/shaders/postprocessing/postprocessing_effects.ppe");
@@ -149,7 +152,7 @@ void Renderer::render_particles(Scene& scene) {
         // Bind VAO
         bind_guard<VertexArray> vao_guard(emitter.particle_vao.get());
         for (ParticleEmitter::Particle const& particle : emitter.particles) {
-            
+
             particle_shader->set_vec3(Shader::Uniforms::Position,
                                       particle.position);
             particle_shader->set_vec3(
@@ -190,11 +193,12 @@ void Renderer::update_screen() {
     glDisable(GL_CULL_FACE);
 
     // Set (postprocessing) shader
-    bind_guard<Shader> shader_guard(
-        PostProcessing::get_instance().get_active().get());
+    auto& shader = PostProcessing::get_instance().get_active().get();
+    bind_guard<Shader> shader_guard(shader);
 
     // Render framebuffer texture to the screen
     glBindTexture(GL_TEXTURE_2D, framebuf.texture);
+    shader.set_int(Shader::Uniforms::Texture, 0);
     glDrawElements(GL_TRIANGLES, screen.index_size(), GL_UNSIGNED_INT, nullptr);
 
     // Re enable functionality

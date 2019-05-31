@@ -62,8 +62,9 @@ std::unique_ptr<Mesh> ResourceLoader<Mesh>::load(std::string const& path) {
     std::size_t total_vertex_components = 0;
 
     // Read attribute data
-    info.vertices.attributes.resize(num_attributes);
-    for (auto& attr : info.vertices.attributes) {
+    info.vertices.buffers.resize(1);
+    info.vertices.buffers[0].attributes.resize(num_attributes);
+    for (auto& attr : info.vertices.buffers[0].attributes) {
         file >> dummy; // Attribute name
         std::size_t location_in_shader;
         std::size_t num_components;
@@ -80,8 +81,8 @@ std::unique_ptr<Mesh> ResourceLoader<Mesh>::load(std::string const& path) {
     assert(dummy == "vertices:" && "Syntax error: Expected /'vertices:/'");
     std::size_t num_vertices;
     file >> num_vertices;
-    info.vertices.vertices.resize(num_vertices * total_vertex_components);
-    for (auto& vtx : info.vertices.vertices) {
+    info.vertices.buffers[0].vertices.resize(num_vertices * total_vertex_components);
+    for (auto& vtx : info.vertices.buffers[0].vertices) {
         file >> vtx;
         char comma;
         file >> comma;
@@ -100,7 +101,7 @@ std::unique_ptr<Mesh> ResourceLoader<Mesh>::load(std::string const& path) {
         }
     }
 
-    info.vertices.dynamic = false;
+    info.vertices.buffers[0].mode = BufferMode::Static;
 
     return std::make_unique<Mesh>(info);
 }

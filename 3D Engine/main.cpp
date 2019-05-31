@@ -16,7 +16,6 @@
 
 // Function try block because I'm cool
 int main() try {
-
     Saturn::Engine::CreateInfo engine_create_info;
     engine_create_info.app_create_info.fullscreen = false;
     engine_create_info.app_create_info.window_caption = "Saturn Engine";
